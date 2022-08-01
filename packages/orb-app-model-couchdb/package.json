@@ -1,0 +1,42 @@
+{
+    "name": "@orbstation/app-model-couchdb",
+    "private": true,
+    "version": "0.0.1",
+    "description": "scribble",
+    "author": {
+        "name": "bemit",
+        "url": "https://bemit.codes"
+    },
+    "contributors": [
+        {
+            "name": "Michael Becker",
+            "url": "https://i-am-digital.eu"
+        }
+    ],
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "./AppRepoCouchDb": "./build/AppRepoCouchDb.js",
+        "./CouchDbModelInstaller": "./build/CouchDbModelInstaller.js",
+        "./CouchDbService": "./build/CouchDbService.js",
+        "./ExtensionRepoCouchDb": "./build/ExtensionRepoCouchDb.js",
+        "./HookRepoCouchDb": "./build/HookRepoCouchDb.js"
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+        "@orbstation/app": "~0.0.1",
+        "@modelize/interop": "~0.0.1",
+        "nano": "^10.0.0"
+    },
+    "peerDependencies": {
+        "@orbstation/app": "~0.0.1",
+        "@modelize/interop": "~0.0.1",
+        "nano": "^10.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+    }
+}

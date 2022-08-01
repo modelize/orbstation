@@ -1,0 +1,34 @@
+{
+    "name": "@bemit/schema",
+    "version": "0.0.1",
+    "description": "scribble",
+    "author": {
+        "name": "bemit",
+        "url": "https://bemit.codes"
+    },
+    "contributors": [
+        {
+            "name": "Michael Becker",
+            "url": "https://i-am-digital.eu"
+        }
+    ],
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "./SchemaRegistry": "./build/SchemaRegistry/index.js",
+        "./SchemaRegistryFile": "./build/SchemaRegistryFile/index.js",
+        "./SchemaService": "./build/SchemaService/index.js"
+    },
+    "devDependencies": {
+        "immutable": "^4.1.0"
+    },
+    "peerDependencies": {
+        "immutable": "^4.1.0"
+    },
+    "scripts": {
+        "dtsgen": "tsc -d --emitDeclarationOnly --pretty && merge-dirs build/dts build && rm -rf build/dts && rm -rf build/**/*.test.*"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "name": "@orbstation/app-model-lowdb",
+    "private": true,
+    "version": "0.0.1",
+    "description": "scribble",
+    "author": {
+        "name": "bemit",
+        "url": "https://bemit.codes"
+    },
+    "contributors": [
+        {
+            "name": "Michael Becker",
+            "url": "https://i-am-digital.eu"
+        }
+    ],
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "./ExtensionRepoLowDb": "./build/ExtensionRepoLowDb.js",
+        "./HookRepoLowDb": "./build/HookRepoLowDb.js"
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+        "@orbstation/app": "~0.0.1",
+        "@modelize/interop": "~0.0.1",
+        "lowdb": "^3.0.0"
+    },
+    "peerDependencies": {
+        "@orbstation/app": "~0.0.1",
+        "@modelize/interop": "~0.0.1",
+        "lowdb": "^3.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+    }
+}

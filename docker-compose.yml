@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+    redis:
+        image: redis:6.2.6-alpine
+        environment:
+            - REDIS_PASSWORD=redis
+            #- REDIS_PASSWORD=${REDIS_PASSWORD}
+        ports:
+            - "4279:6379"
+        expose:
+            - 4279
+
+    couchdb:
+        image: couchdb:3.2
+        #        logging:
+        #            driver: 'none'
+        environment:
+            - COUCHDB_USER=local-admin
+            - COUCHDB_PASSWORD=local-pass
+        volumes:
+            - ./_couchdb-data:/opt/couchdb/data
+        ports:
+            - '4273:5984'
+            #- '5055:443'
+            #- '5056:80'
+#volumes:
+#    pg_primary:

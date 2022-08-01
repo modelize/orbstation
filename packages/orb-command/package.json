@@ -1,0 +1,36 @@
+{
+    "name": "@orbstation/command",
+    "version": "0.1.1",
+    "description": "Simple CLI command dispatcher and file-resolver for config-less setup.",
+    "author": {
+        "name": "bemit",
+        "url": "https://bemit.codes"
+    },
+    "contributors": [
+        {
+            "name": "Michael Becker",
+            "url": "https://i-am-digital.eu"
+        }
+    ],
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/modelize/orbstation.git",
+        "directory": "packages/orb-command"
+    },
+    "type": "module",
+    "exports": {
+        "./CommandHandler": "./build/CommandHandler.js",
+        "./CommandResolverFolder": "./build/CommandResolverFolder.js",
+        "./CommandRun": "./build/CommandRun.js",
+        "./CommandDispatcher": "./build/CommandDispatcher.js",
+        "./ErrorCommandHandler": "./build/ErrorCommandHandler.js",
+        "./ErrorCommandNotFound": "./build/ErrorCommandNotFound.js"
+    },
+    "scripts": {
+        "dtsgen": "tsc -d --emitDeclarationOnly --pretty && merge-dirs build/dts build && rm -rf build/dts && rm -rf build/**/*.test.*"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}
