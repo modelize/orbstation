@@ -1,0 +1,40 @@
+{
+    "name": "@orbstation/route",
+    "version": "0.0.3",
+    "description": "scribble",
+    "author": {
+        "name": "bemit",
+        "url": "https://bemit.codes"
+    },
+    "contributors": [
+        {
+            "name": "Michael Becker",
+            "url": "https://i-am-digital.eu"
+        }
+    ],
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/modelize/orbstation.git",
+        "directory": "packages/orb-route"
+    },
+    "type": "module",
+    "exports": {
+        "./ErrorHandlerMiddleware": "./build/ErrorHandlerMiddleware.js",
+        "./RouteDef": "./build/RouteDef.js",
+        "./RouteHandlerError": "./build/RouteHandlerError.js",
+        "./RouteHandler": "./build/RouteHandler.js"
+    },
+    "devDependencies": {
+        "@types/express": "^4.10.0"
+    },
+    "peerDependencies": {
+        "@types/express": "^4.10.0"
+    },
+    "scripts": {
+        "dtsgen": "tsc -d --emitDeclarationOnly --pretty && merge-dirs build/dts build && rm -rf build/dts && rm -rf build/**/*.test.*"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

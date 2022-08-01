@@ -1,0 +1,43 @@
+{
+    "name": "@orbstation/app",
+    "private": true,
+    "version": "0.0.1",
+    "description": "scribble",
+    "author": {
+        "name": "bemit",
+        "url": "https://bemit.codes"
+    },
+    "contributors": [
+        {
+            "name": "Michael Becker",
+            "url": "https://i-am-digital.eu"
+        }
+    ],
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "./AppService": "./build/AppService.js",
+        "./ExtensionResolver": "./build/ExtensionResolver.js",
+        "./ExtensionService": "./build/ExtensionService.js",
+        "./ExtensionSetup": "./build/ExtensionSetup.js",
+        "./ExtensionSetup/ErrorExtensionSetup": "./build/ExtensionSetup/ErrorExtensionSetup.js",
+        "./ExtensionSetup/extensionInstallerHooks": "./build/ExtensionSetup/extensionInstallerHooks.js",
+        "./HookService": "./build/HookService.js",
+        "./InMemoryAppRepository": "./build/InMemoryAppRepository.js",
+        "./InMemoryHookRepository": "./build/InMemoryHookRepository.js",
+        "./InMemoryStore": "./build/InMemoryStore.js"
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+        "@modelize/interop": "~0.0.1"
+    },
+    "peerDependencies": {
+        "@modelize/interop": "~0.0.1"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+    }
+}
