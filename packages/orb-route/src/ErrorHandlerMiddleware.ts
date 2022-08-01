@@ -3,6 +3,8 @@ import { RouteHandlerError } from '@orbstation/route/RouteHandlerError'
 
 export const ErrorHandlerMiddleware: ErrorRequestHandler = async(
     err: Error, _req: express.Request, res: express.Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _next,
 ) => {
     res.locals.error_stack = err.stack
     if(err instanceof RouteHandlerError) {
