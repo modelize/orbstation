@@ -1,7 +1,7 @@
 {
     "name": "@orbstation/route",
-    "version": "0.0.4",
-    "description": "scribble",
+    "version": "0.0.5",
+    "description": "NodeJS routing helper for express apps.",
     "author": {
         "name": "bemit",
         "url": "https://bemit.codes"

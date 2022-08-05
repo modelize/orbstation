@@ -1,7 +1,7 @@
 import process from 'process'
 
 export class CommandRun {
-    protected readonly runId: string
+    public readonly runId: string
     protected readonly onHaltCb: (() => Promise<void> | void)[] = []
 
     constructor(runId: string) {
