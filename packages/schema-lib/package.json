@@ -1,6 +1,6 @@
 {
     "name": "@bemit/schema",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "NodeJS helper suite to load schemas based on namespaced IDs",
     "author": {
         "name": "bemit",
