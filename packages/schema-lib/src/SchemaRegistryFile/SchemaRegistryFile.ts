@@ -2,15 +2,16 @@ import fs from 'fs'
 import path from 'path'
 import { SchemaRegistry } from '@bemit/schema/SchemaRegistry'
 import { ISchemaRegistry, SchemaResolverFn, SchemaResolverListFn } from '@bemit/schema/SchemaService'
+import util from 'util'
 
 const makeRepoPath = (path: string): string => {
     return process.platform === 'win32' ? 'file://' + path : path
 }
 
-export const schemaFileResolver: (extension: string) => SchemaResolverFn = (extension) => async(def) => {
+export const schemaFileImporter: (suffix: string) => SchemaResolverFn = (suffix) => async(def) => {
     if(
         !def?.path ||
-        !def.path.endsWith(extension)
+        !def.path.endsWith(suffix)
     ) return undefined
     return import(makeRepoPath(def.path))
         .then(m => ({schema: m.default}))
@@ -18,8 +19,19 @@ export const schemaFileResolver: (extension: string) => SchemaResolverFn = (exte
     // .catch(e => ({schema: m.default}))
 }
 
+const readFile = util.promisify(fs.readFile)
+
+export const schemaFileResolver: (suffix: string) => SchemaResolverFn = (suffix) => async(def) => {
+    if(
+        !def?.path ||
+        !def.path.endsWith(suffix)
+    ) return undefined
+    const schema = await readFile(def.path)
+    return {schema: JSON.parse(schema.toString())}
+}
+
 export const schemaFileListResolver: (extension: string) => SchemaResolverListFn = (
-    extension: string
+    extension: string,
 ) =>
     async(def) => {
         if(!def?.path) return undefined
@@ -44,7 +56,7 @@ export const schemaFileListResolver: (extension: string) => SchemaResolverListFn
                                 resolve1(name.slice(0, name.length - extension.length))
                             })
                         })
-                    })
+                    }),
                 )
                     .then(files => files.filter(f => typeof f === 'string') as string[])
                     .then(files => resolve(files))
@@ -55,7 +67,7 @@ export const schemaFileListResolver: (extension: string) => SchemaResolverListFn
                 .sort((a, b) => a.localeCompare(b))
                 .map(schemaFile => ({
                     path: schemaFile,
-                }))
+                })),
         }
     }
 
