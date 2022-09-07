@@ -74,6 +74,8 @@ export const schemaFileListResolver: (extension: string) => SchemaResolverListFn
 export class SchemaRegistryFile extends SchemaRegistry implements ISchemaRegistry {
     private readonly folder: string
     private readonly extension: string
+    private readonly resolved: { [path: string]: { schema: any } } = {}
+    private readonly resolvedLists: { [path: string]: { schemas: any[] } } = {}
 
     constructor(id: string, folder: string, extension: string) {
         super(id, schemaFileResolver(extension), schemaFileListResolver(extension))
@@ -81,17 +83,25 @@ export class SchemaRegistryFile extends SchemaRegistry implements ISchemaRegistr
         this.extension = extension
     }
 
-    resolve(...[def]): ReturnType<SchemaResolverFn> {
-        return super.resolve({
+    async resolve(...[def]): ReturnType<SchemaResolverFn> {
+        if(this.resolved[def.path]) return this.resolved[def.path]
+        const schema = await super.resolve({
             path: path.join(this.folder, def.path + this.extension),
             scope: this.id,
         })
+        if(!schema) return undefined
+        this.resolved[def.path] = schema
+        return this.resolved[def.path]
     }
 
-    list(...[def]): ReturnType<SchemaResolverListFn> {
-        return super.list({
+    async list(...[def]): ReturnType<SchemaResolverListFn> {
+        if(this.resolvedLists[def.path]) return this.resolvedLists[def.path]
+        const list = await super.list({
             path: path.join(this.folder, def.path),
             scope: this.id,
         })
+        if(!list) return undefined
+        this.resolvedLists[def.path] = list
+        return this.resolvedLists[def.path]
     }
 }
