@@ -1,6 +1,6 @@
 {
     "name": "@orbstation/route",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "NodeJS routing helper for express apps.",
     "author": {
         "name": "bemit",
@@ -21,6 +21,7 @@
     "type": "module",
     "exports": {
         "./ErrorHandlerMiddleware": "./build/ErrorHandlerMiddleware.js",
+        "./loadableHandler": "./build/loadableHandler.js",
         "./RouteDef": "./build/RouteDef.js",
         "./RouteHandlerError": "./build/RouteHandlerError.js",
         "./RouteHandler": "./build/RouteHandler.js"

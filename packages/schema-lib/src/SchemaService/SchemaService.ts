@@ -46,6 +46,11 @@ export class SchemaService implements ISchemaRegistry {
         this.resolver = resolver
     }
 
+    addResolver(...resolver: ISchemaRegistry[]) {
+        this.resolver.push(...resolver)
+        return this
+    }
+
     async resolve(...args: Parameters<SchemaResolverFn>): ReturnType<SchemaResolverFn> {
         let schemaData: any
         for(const resolve of this.resolver) {

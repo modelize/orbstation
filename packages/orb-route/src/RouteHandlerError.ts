@@ -9,7 +9,12 @@ export class RouteHandlerError extends Error {
                 .setStatusCode(500)
                 .setError(e)
         }
-        return new RouteHandlerError(e)
+        if(typeof e === 'string') {
+            return new RouteHandlerError(e)
+                .setStatusCode(500)
+                .setPublicMessage('system-error')
+        }
+        return new RouteHandlerError('system-error')
             .setStatusCode(500)
             .setPublicMessage('system-error')
             .setError(e)

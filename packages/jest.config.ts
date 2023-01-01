@@ -16,7 +16,7 @@ const base: Partial<Config.InitialOptions> = {
     ],*/
     transform: {
         // '^.+\\.ts$': 'babel-jest',
-        '^.+\\.ts$': 'ts-jest',
+        '^.+\\.ts$': '../node_modules/ts-jest',
     },
     /*extensionsToTreatAsEsm: ['.ts'],
     globals: {

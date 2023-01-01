@@ -46,7 +46,7 @@ app.use(function corsMiddleware(_req: express.Request, res: express.Response, ne
     next()
 })
 
-const nanoTrace = customAlphabet('0123456789abcdefghijklmnopqrstuvwxqzABCDEFGHIJKLMNOPQRSTUVWXQZ', 32)
+const nanoTrace = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 32)
 const nanoTraceSpan = customAlphabet('0123456789', 16)
 
 app.use(function profilerMiddleware(req: express.Request & RequestCustomPayload, res: express.Response, next: () => void) {

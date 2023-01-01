@@ -38,17 +38,23 @@
             "@orbstation/app-model-lowdb/*": [
                 "orb-app-model-lowdb/src/*"
             ],
+            "@orbstation/route": [
+                "orb-route/src"
+            ],
+            "@orbstation/route/*": [
+                "orb-route/src/*"
+            ],
             "@orbstation/command": [
                 "orb-command/src"
             ],
             "@orbstation/command/*": [
                 "orb-command/src/*"
             ],
-            "@orbstation/route": [
-                "orb-route/src"
+            "@orbstation/cling": [
+                "orb-cling/src"
             ],
-            "@orbstation/route/*": [
-                "orb-route/src/*"
+            "@orbstation/cling/*": [
+                "orb-cling/src/*"
             ],
             "@bemit/schema": [
                 "schema-lib/src"
