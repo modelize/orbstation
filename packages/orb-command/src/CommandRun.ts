@@ -4,48 +4,55 @@ export class CommandRun<C = undefined> {
     public readonly runId: string
     public readonly context: C | undefined
     protected readonly onHaltCb: (() => Promise<void> | void)[] = []
+    protected halting: boolean = false
+    protected readonly opts: { logHalt?: boolean } = {}
 
-    constructor(runId: string, context?: C) {
+    constructor(runId: string, context?: C, opts: CommandRun['opts'] = {}) {
         this.runId = runId
         this.context = context
+        this.opts = opts
     }
 
     onHalt(cb: () => Promise<void> | void) {
         this.onHaltCb.push(cb)
     }
 
+    isHalted() {
+        return this.halting
+    }
+
+    protected logDebug(message: string) {
+        if(this.opts.logHalt) {
+            process.stdout.write('[' + this.runId + '] ' + message + '\n')
+        }
+    }
+
     async halt() {
+        this.halting = true
         try {
             await Promise.all(this.onHaltCb.map((on) => on() || Promise.resolve()))
-            process.stdout.write('[' + this.runId + '] ' + 'cli: closed' + '\n')
+            this.logDebug('cli: closed')
         } catch {
             process.stderr.write('[' + this.runId + '] ' + 'cli: shutdown error' + '\n')
             process.exit(10)
         }
     }
 
-    listenOnSignals(): CommandRun<C> {
-        process.on('SIGINT', () => {
-            process.stdout.write('[' + this.runId + '] ' + 'cli: received SIGINT 1' + '\n')
-            // todo: somehow after the first console, nothing is logged further on -> but only for most times, sometimes it logs/halts correctly,
-            //       this seems to be normal for windows/unix cli interrupt behaviour and e.g. force exiting
-            //process.stdout.write('cli: received SIGINT 2')
-            try {
-                this.halt().then(() => {
-                    process.stdout.write('[' + this.runId + '] ' + 'cli: halt by SIGINT' + '\n')
-                    process.exit(0)
-                })
-            } catch(e) {
-                process.stderr.write('SIGINT ERROR' + '\n')
-            }
-        })
-
-        process.on('SIGTERM', () => {
-            process.stdout.write('[' + this.runId + '] ' + 'cli: received SIGTERM' + '\n')
-            this.halt().then(() => {
-                process.stdout.write('[' + this.runId + '] ' + 'cli: halt by SIGTERM' + '\n')
-                process.exit()
+    listenOnSignals(signals: string[] = ['SIGINT', 'SIGTERM']): CommandRun<C> {
+        const listenOnSignal = (signal: string) => {
+            process.on(signal, () => {
+                this.logDebug('cli: received ' + signal)
+                this.halt()
+                    .then(() => undefined)
+                    .catch((e) => {
+                        process.stderr.write('[' + this.runId + '] ' + 'cli: halt by ' + signal + ' with error' + '\n')
+                        process.stderr.write(JSON.stringify(e) + '\n')
+                        process.exit(1)
+                    })
             })
+        }
+        signals.forEach(signal => {
+            listenOnSignal(signal)
         })
 
         return this
