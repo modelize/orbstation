@@ -2,6 +2,8 @@ import { CommandResolver } from '@orbstation/command/CommandResolverFolder'
 import { CommandRun } from '@orbstation/command/CommandRun'
 import { ErrorCommandNotFound } from '@orbstation/command/ErrorCommandNotFound'
 import process from 'process'
+import { CommandHandler } from '@orbstation/command/CommandHandler'
+import { ErrorCommandAborted } from '@orbstation/command/ErrorCommandAborted'
 
 export class CommandDispatcher<C = undefined> {
     private readonly resolver: CommandResolver<C>[]
@@ -24,8 +26,8 @@ export class CommandDispatcher<C = undefined> {
         return this
     }
 
-    prepare(runId: string, context?: C): CommandRun<C> {
-        return (new CommandRun<C>(runId, context)).listenOnSignals()
+    prepare(runId: string, context?: C, opts: CommandRun['opts'] = {}, signals?: string[]): CommandRun<C> {
+        return (new CommandRun<C>(runId, context, opts)).listenOnSignals(signals)
     }
 
     async dispatch(commandRun: CommandRun<C>, args?: string[]): Promise<void> {
@@ -39,6 +41,7 @@ export class CommandDispatcher<C = undefined> {
         if(!command) {
             if(maybeHelpArg && this.helpArgs.includes(maybeHelpArg)) {
                 for(const resolver of this.resolver) {
+                    if(commandRun.isHalted()) return
                     const commands = await resolver.listHelp()
                     commands.forEach(({help, name}) => {
                         process.stdout.write(' Command `' + name + '`:' + '\n')
@@ -52,22 +55,31 @@ export class CommandDispatcher<C = undefined> {
 
         const resolvers = this.resolver.slice(0, this.resolver.length)
         let resolver: undefined | CommandResolver<C>
-        let cmd
+        let cmd: undefined | CommandHandler<C>
         do {
             resolver = resolvers.shift()
             if(resolver) {
                 cmd = await resolver.resolve(command as string)
             }
-        } while(typeof resolver !== 'undefined' && typeof cmd === 'undefined')
+        } while(!commandRun.isHalted() && typeof resolver !== 'undefined' && typeof cmd === 'undefined')
+
+        if(commandRun.isHalted()) return
+
         if(!resolver || typeof cmd === 'undefined') {
             throw new ErrorCommandNotFound('command not found: ' + command)
         }
+
         const showHelp = maybeHelpArg ? this.helpArgs.includes(maybeHelpArg) : false
         if(showHelp) {
             process.stdout.write(' Command `' + command + '`:' + '\n')
             process.stdout.write('  ' + (cmd.help || 'no help description') + '\n\n')
             return
         }
+
         await (cmd.run(command, args || [], commandRun) || Promise.resolve())
+
+        if(commandRun.isHalted()) {
+            throw new ErrorCommandAborted('commandRun is halted')
+        }
     }
 }

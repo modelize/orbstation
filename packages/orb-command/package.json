@@ -1,6 +1,6 @@
 {
     "name": "@orbstation/command",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Simple CLI command dispatcher and file-resolver for config-less setup.",
     "author": {
         "name": "bemit",
@@ -24,6 +24,7 @@
         "./CommandResolverFolder": "./build/CommandResolverFolder.js",
         "./CommandRun": "./build/CommandRun.js",
         "./CommandDispatcher": "./build/CommandDispatcher.js",
+        "./ErrorCommandAborted": "./build/ErrorCommandAborted.js",
         "./ErrorCommandHandler": "./build/ErrorCommandHandler.js",
         "./ErrorCommandNotFound": "./build/ErrorCommandNotFound.js"
     },

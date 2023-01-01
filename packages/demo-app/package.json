@@ -36,7 +36,7 @@
         "@modelize/transfer": "~0.0.3",
         "@orbstation/app": "~0.0.1",
         "@orbstation/route": "~0.0.6",
-        "@orbstation/command": "~0.2.0",
+        "@orbstation/command": "~0.2.1",
         "@orbstation/cling": "~0.0.1",
         "@orbstation/app-model-couchdb": "~0.0.1",
         "@orbstation/app-model-lowdb": "~0.0.1",
