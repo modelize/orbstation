@@ -1,4 +1,5 @@
 import { ISchemaRegistry, SchemaResolverDefinition, SchemaResolverFn, SchemaResolverListFn } from '@bemit/schema/SchemaService'
+import { SchemaRegistryError } from '@bemit/schema/SchemaRegistryError'
 
 export const schemaDefParse = (def: SchemaResolverDefinition) => {
     if(!def?.path && !def?.scope) return undefined
@@ -8,10 +9,10 @@ export const schemaDefParse = (def: SchemaResolverDefinition) => {
     const scope = isPathScope ? maybeScope.slice(1) :
         typeof def?.scope !== 'undefined' ? def?.scope : undefined
     if(typeof scope === 'undefined' || scope.trim() === '') {
-        throw new Error('schemaRegistryResolver no valid scope found for definitions: ' + JSON.stringify(def))
+        throw new SchemaRegistryError('no valid scope found for definitions: ' + JSON.stringify(def))
     }
     if(pathParts.includes('..')) {
-        throw new Error('unsecure path in `schemaRegistryResolver` detected')
+        throw new SchemaRegistryError('unsecure path in `schemaRegistryResolver` detected')
     }
     return {
         scope,

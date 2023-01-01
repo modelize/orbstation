@@ -1,6 +1,6 @@
 {
     "name": "@bemit/schema",
-    "version": "0.0.4",
+    "version": "0.1.0",
     "description": "NodeJS helper suite to load schemas based on namespaced IDs",
     "author": {
         "name": "bemit",
@@ -16,6 +16,7 @@
     "type": "module",
     "exports": {
         "./SchemaRegistry": "./build/SchemaRegistry/index.js",
+        "./SchemaRegistryError": "./build/SchemaRegistryError/index.js",
         "./SchemaRegistryFile": "./build/SchemaRegistryFile/index.js",
         "./SchemaService": "./build/SchemaService/index.js"
     },

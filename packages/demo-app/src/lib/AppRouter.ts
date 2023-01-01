@@ -1,7 +1,8 @@
 import { ServiceService } from '../services.js'
 import { HookService, IHook } from '@orbstation/app/HookService'
-import { dynamicLoader, handlerErrorWrapper } from './routing.js'
+import { handlerErrorWrapper } from './routing.js'
 import { DELETE, GET, PATCH, POST, PUT } from '@orbstation/route/RouteDef'
+import { loadableHandler } from '@orbstation/route/loadableHandler'
 import * as core from 'express-serve-static-core'
 
 const buildRouteHandler = (
@@ -12,7 +13,7 @@ const buildRouteHandler = (
 ) => {
     const {
         type, from,
-        path: routePath, handler, method
+        path: routePath, handler, method,
     } = hook
     if(type !== 'route') {
         return
@@ -26,7 +27,7 @@ const buildRouteHandler = (
 
     const handle = handlerErrorWrapper(
         routeId,
-        dynamicLoader(() => import (handlerPath).then(extension => extension.default))
+        loadableHandler(() => import (handlerPath).then(extension => extension.default)),
     )
 
     // todo: must always be "before `ErrorHandlerMiddleware`"

@@ -46,10 +46,10 @@ export const etlCommand: CommandHandler['run'] = async() => {
                 // resumeInfo: {offset: data.length}
             }
         })
-        .onWrite(async(writer, row) => {
-            // for(const row of rows) {
-            await writer.createHook(row)
-            // }
+        .onWrite(async(writer, rows) => {
+            for(const row of rows) {
+                await writer.createHook(row)
+            }
         })
         .start()
         .then((stats) => {

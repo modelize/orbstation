@@ -9,7 +9,11 @@ const shutdown = function() {
     // todo clean up your resources and shit, then exit
     //      - end in-memory polling in e.g. logger/cacher/que-handler
     console.log('server: closing')
-    server.close(() => {
+    server.close((err) => {
+        if(err) {
+            console.error('server: closed with ERROR', err)
+            process.exit(81)
+        }
         console.log('server: closed')
         process.exit()
     })

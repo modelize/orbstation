@@ -68,38 +68,54 @@ export const services = (serviceConfig: Partial<ServiceConfig>): ServiceConfig =
         //keyFilename: __dirname + '/config/_auth_google_cloud_log.json',
         keyFilename: gcpFiles.log as string,
     }])
-    ServiceService.define(RedisManager, [{
-        url: 'redis://' + process.env.REDIS_HOST,
-        database: 6,
-    }])
-    ServiceService.define(RedisCached, () => [new RedisManager({
-        url: 'redis://' + process.env.REDIS_HOST,
-        database: 7,
-    })] as ConstructorParameters<typeof RedisCached>)
 
+    ServiceService.define(RedisManager, (): ConstructorParameters<typeof RedisManager> => [[
+        RedisManager
+            .create({
+                url: 'redis://' + process.env.REDIS_HOST,
+                database: 6,
+            })
+            .on('error', (err) => console.log('Redis Client Error', err)),
+        RedisManager
+            .create({
+                url: 'redis://' + process.env.REDIS_HOST,
+                database: 7,
+            })
+            .on('error', (err) => console.log('Redis Client Error', err)),
+    ]])
+    ServiceService.define(RedisCached, (): ConstructorParameters<typeof RedisCached> => [
+        ServiceService.use(RedisManager).database(7),
+    ])
     ServiceService.define(CouchDbService, [{
         endpoint: 'http://local-admin:local-pass@localhost:4273',
     }])
 
-    ServiceService.define(CommandDispatcher, [{
-        resolvers: [
+    ServiceService.define<typeof CommandDispatcher<{ demo?: undefined }>>(CommandDispatcher, (): ConstructorParameters<typeof CommandDispatcher<{ demo?: undefined }>> => [{
+        resolver: [
             new CommandResolverFolder({folder: path.join(__dirname, 'commands')}),
         ],
     }])
+    /*ServiceService.use<typeof CommandDispatcher<{ demo?: undefined }>>(CommandDispatcher)
+        .addResolver(new CommandResolverFolder<{ demo?: undefined }>({folder: path.join(__dirname, 'commands2')}))*/
 
-    ServiceService.define(IdManager, [{
+    ServiceService.define(IdManager, (): ConstructorParameters<typeof IdManager> => [{
         host: process.env.ID_HOST as string,
-        issuer: process.env.ID_ISSUER as string,
+        validation: {
+            type: 'load-key',
+            issuer: process.env.ID_ISSUER as string,
+            keyUrl: '/.verification-key',
+            algorithms: ['RS256'],
+        },
         cacheExpire: 60 * (isProd ? 60 * 6 : 15),
         cacheExpireMemory: 60 * 5,
-        redisManager: () => ServiceService.use(RedisManager),
+        redis: ServiceService.use(RedisManager).database(6),
     }])
 
     ServiceService.define(SchemaService, [{
         resolver: [
             schemaRegistryResolver({
                 commons: (id: string) => new SchemaRegistryFile(id, path.resolve(__dirname, 'schemas'), '.json'),
-                commonsJs: (id: string) => new SchemaRegistryFile(id, path.resolve(__dirname, 'schemas/schemaJs'), '.js'),
+                commonsJs: (id: string) => new SchemaRegistryFile(id, path.resolve(__dirname, 'schemas/schemaJs'), '.js', true),
                 //
                 system: (id: string) => new SchemaRegistryFile(id, path.resolve(__dirname, 'schemas', 'system'), '.json'),
                 model: (id: string) => new SchemaRegistryFile(id, path.resolve(__dirname, 'schemas', 'model'), '.json'),
@@ -133,7 +149,7 @@ export const services = (serviceConfig: Partial<ServiceConfig>): ServiceConfig =
     }])
 
     ServiceService.define(HookService, (): ConstructorParameters<typeof HookService> => [{
-        // repo: () => new HookRepoCouchDb('hook', ServiceService.use(CouchDbService)),
+        // repo: new HookRepoCouchDb('hook', ServiceService.use(CouchDbService)),
         // repo: new HookRepoLowDb(new Low(new JSONFile(path.resolve(lowDbFolder, 'db-hook.json')))),
         repo: new InMemoryHookRepository({}, false),
         // repo: new InMemoryHookRepository({}, true),

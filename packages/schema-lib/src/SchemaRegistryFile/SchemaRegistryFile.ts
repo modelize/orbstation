@@ -8,24 +8,17 @@ const makeRepoPath = (path: string): string => {
     return process.platform === 'win32' ? 'file://' + path : path
 }
 
-export const schemaFileImporter: (suffix: string) => SchemaResolverFn = (suffix) => async(def) => {
-    if(
-        !def?.path ||
-        !def.path.endsWith(suffix)
-    ) return undefined
-    return import(makeRepoPath(def.path))
-        .then(m => ({schema: m.default}))
-    // todo: add a good "ERR_MODULE_NOT_FOUND" catch
-    // .catch(e => ({schema: m.default}))
-}
-
 const readFile = util.promisify(fs.readFile)
 
-export const schemaFileResolver: (suffix: string) => SchemaResolverFn = (suffix) => async(def) => {
+export const schemaFileResolver: (suffix: string, useImport?: boolean | ((path: string) => boolean)) => SchemaResolverFn = (suffix, useImport) => async(def) => {
     if(
         !def?.path ||
         !def.path.endsWith(suffix)
     ) return undefined
+    if(useImport === true || (typeof useImport === 'function' && useImport(def.path))) {
+        return import(makeRepoPath(def.path))
+            .then(m => ({schema: m.default}))
+    }
     const schema = await readFile(def.path)
     return {schema: JSON.parse(schema.toString())}
 }
@@ -77,8 +70,12 @@ export class SchemaRegistryFile extends SchemaRegistry implements ISchemaRegistr
     private readonly resolved: { [path: string]: { schema: any } } = {}
     private readonly resolvedLists: { [path: string]: { schemas: any[] } } = {}
 
-    constructor(id: string, folder: string, extension: string) {
-        super(id, schemaFileResolver(extension), schemaFileListResolver(extension))
+    // todo: add `noResolveCache` option
+    constructor(
+        id: string, folder: string, extension: string,
+        useImport?: boolean | ((path: string) => boolean),
+    ) {
+        super(id, schemaFileResolver(extension, useImport), schemaFileListResolver(extension))
         this.folder = folder
         this.extension = extension
     }

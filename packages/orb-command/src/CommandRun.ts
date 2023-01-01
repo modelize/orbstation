@@ -1,11 +1,13 @@
 import process from 'process'
 
-export class CommandRun {
+export class CommandRun<C = undefined> {
     public readonly runId: string
+    public readonly context: C | undefined
     protected readonly onHaltCb: (() => Promise<void> | void)[] = []
 
-    constructor(runId: string) {
+    constructor(runId: string, context?: C) {
         this.runId = runId
+        this.context = context
     }
 
     onHalt(cb: () => Promise<void> | void) {
@@ -22,7 +24,7 @@ export class CommandRun {
         }
     }
 
-    listenOnSignals(): CommandRun {
+    listenOnSignals(): CommandRun<C> {
         process.on('SIGINT', () => {
             process.stdout.write('[' + this.runId + '] ' + 'cli: received SIGINT 1' + '\n')
             // todo: somehow after the first console, nothing is logged further on -> but only for most times, sometimes it logs/halts correctly,
