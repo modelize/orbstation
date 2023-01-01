@@ -1,0 +1,33 @@
+{
+    "name": "@orbstation/cling",
+    "version": "0.0.1",
+    "description": "Textual status helper, for CLI progress or API result log",
+    "author": {
+        "name": "bemit",
+        "url": "https://bemit.codes"
+    },
+    "contributors": [
+        {
+            "name": "Michael Becker",
+            "url": "https://i-am-digital.eu"
+        }
+    ],
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/modelize/orbstation.git",
+        "directory": "packages/orb-cling"
+    },
+    "type": "module",
+    "exports": {
+        ".": "./build/index.js",
+        "./make": "./build/make.js",
+        "./outputLog": "./build/outputLog.js",
+        "./outputStd": "./build/outputStd.js",
+        "./question": "./build/question.js",
+        "./symbols": "./build/symbols.js"
+    },
+    "scripts": {
+        "dtsgen": "tsc -d --emitDeclarationOnly --pretty && merge-dirs build/dts build && rm -rf build/dts && rm -rf build/**/*.test.*"
+    }
+}
