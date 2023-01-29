@@ -28,6 +28,7 @@ export class CommandRun<C = undefined> {
     }
 
     async halt() {
+        if(this.halting) return
         this.halting = true
         try {
             await Promise.all(this.onHaltCb.map((on) => on() || Promise.resolve()))

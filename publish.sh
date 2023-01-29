@@ -10,6 +10,10 @@ cd orb-route
 cp README.md build/ && cp LICENSE build/
 cd ../
 
+cd orb-oas
+cp README.md build/ && cp LICENSE build/
+cd ../
+
 cd orb-command
 cp README.md build/ && cp LICENSE build/
 cd ../

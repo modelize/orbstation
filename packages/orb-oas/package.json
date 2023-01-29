@@ -1,0 +1,38 @@
+{
+    "name": "@orbstation/oas",
+    "version": "0.0.1",
+    "description": "Simple OpenAPI typings and definition helper.",
+    "author": {
+        "name": "bemit",
+        "url": "https://bemit.codes"
+    },
+    "contributors": [
+        {
+            "name": "Michael Becker",
+            "url": "https://i-am-digital.eu"
+        }
+    ],
+    "license": "MIT",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/modelize/orbstation.git",
+        "directory": "packages/orb-oas"
+    },
+    "exports": {
+        "./OpenApi": "./OpenApi.js",
+        "./OpenApiApp": "./OpenApiApp.js"
+    },
+    "devDependencies": {
+        "@orbstation/route": "~0.0.6"
+    },
+    "peerDependencies": {
+        "@orbstation/route": "~0.0.6"
+    },
+    "scripts": {
+        "dtsgen": "tsc -d --emitDeclarationOnly --pretty && merge-dirs build/dts/orb-oas/src build && rm -rf build/dts && rm -rf build/**/*.test.*"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}
