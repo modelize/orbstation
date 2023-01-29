@@ -46,6 +46,16 @@ packer(
                     {distSuffix: '', args: ['--no-comments', '--extensions', '.ts', '--extensions', '.js', '--ignore', '**/*.d.ts']},
                 ],
             },
+            orbOas: {
+                name: '@orbstation/oas',
+                root: path.resolve(__dirname, 'packages', 'orb-oas'),
+                entry: path.resolve(__dirname, 'packages', 'orb-oas/src/'),
+                esmOnly: true,
+                doServeWatch: true,
+                babelTargets: [
+                    {distSuffix: '', args: ['--no-comments', '--extensions', '.ts', '--extensions', '.js', '--ignore', '**/*.d.ts']},
+                ],
+            },
             orbCommand: {
                 name: '@orbstation/command',
                 root: path.resolve(__dirname, 'packages', 'orb-command'),
@@ -98,6 +108,7 @@ packer(
                     '-w', path.resolve(__dirname, 'packages', 'orb-app-model-couchdb', 'build') + '/**/*.js',
                     '-w', path.resolve(__dirname, 'packages', 'orb-app-model-lowdb', 'build') + '/**/*.js',
                     '-w', path.resolve(__dirname, 'packages', 'orb-route', 'build') + '/**/*.js',
+                    '-w', path.resolve(__dirname, 'packages', 'orb-oas', 'build') + '/**/*.js',
                     '-w', path.resolve(__dirname, 'packages', 'orb-cling', 'build') + '/**/*.js',
                     '-w', path.resolve(__dirname, 'packages', 'orb-command', 'build') + '/**/*.js',
                 ],
@@ -126,6 +137,7 @@ packer(
                 const nodePackages = [
                     path.resolve(__dirname, 'packages', 'orb-command'),
                     path.resolve(__dirname, 'packages', 'orb-route'),
+                    path.resolve(__dirname, 'packages', 'orb-oas'),
                     path.resolve(__dirname, 'packages', 'orb-cling'),
                     path.resolve(__dirname, 'packages', 'schema-lib'),
                     // path.resolve(__dirname, 'packages', 'render-style'),

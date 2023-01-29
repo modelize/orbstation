@@ -44,6 +44,12 @@
             "@orbstation/route/*": [
                 "orb-route/src/*"
             ],
+            "@orbstation/oas": [
+                "orb-oas/src"
+            ],
+            "@orbstation/oas/*": [
+                "orb-oas/src/*"
+            ],
             "@orbstation/command": [
                 "orb-command/src"
             ],

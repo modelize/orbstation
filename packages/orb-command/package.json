@@ -1,6 +1,6 @@
 {
     "name": "@orbstation/command",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "Simple CLI command dispatcher and file-resolver for config-less setup.",
     "author": {
         "name": "bemit",
