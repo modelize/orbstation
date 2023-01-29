@@ -1,0 +1,43 @@
+{
+    "name": "@orbstation/service",
+    "version": "0.0.1",
+    "description": "Service configuration and extension setup helper for NodeJS apps.",
+    "author": {
+        "name": "bemit",
+        "url": "https://bemit.codes"
+    },
+    "contributors": [
+        {
+            "name": "Michael Becker",
+            "url": "https://i-am-digital.eu"
+        }
+    ],
+    "license": "MIT",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/modelize/orbstation.git",
+        "directory": "packages/orb-service"
+    },
+    "exports": {
+        ".": "./index.js",
+        "./envIs": "./envIs.js",
+        "./OrbExtensions": "./OrbExtensions.js",
+        "./OrbService": "./OrbService.js",
+        "./OrbServiceFeatures": "./OrbServiceFeatures.js"
+    },
+    "devDependencies": {
+        "@orbstation/oas": "~0.0.1",
+        "@orbstation/route": "~0.0.6"
+    },
+    "peerDependencies": {
+        "@orbstation/oas": "~0.0.1",
+        "@orbstation/route": "~0.0.6"
+    },
+    "scripts": {
+        "dtsgen": "tsc -d --emitDeclarationOnly --pretty && merge-dirs build/dts/orb-service/src build && rm -rf build/dts && rm -rf build/**/*.test.*"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

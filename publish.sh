@@ -18,6 +18,10 @@ cd orb-command
 cp README.md build/ && cp LICENSE build/
 cd ../
 
+cd orb-service
+cp README.md build/ && cp LICENSE build/
+cd ../
+
 cd orb-cling
 cp README.md build/ && cp LICENSE build/
 cd ../

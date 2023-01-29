@@ -56,6 +56,12 @@
             "@orbstation/command/*": [
                 "orb-command/src/*"
             ],
+            "@orbstation/service": [
+                "orb-service/src"
+            ],
+            "@orbstation/service/*": [
+                "orb-service/src/*"
+            ],
             "@orbstation/cling": [
                 "orb-cling/src"
             ],
@@ -67,7 +73,7 @@
             ],
             "@bemit/schema/*": [
                 "schema-lib/src/*"
-            ],
+            ]
         }
     },
     "exclude": [
