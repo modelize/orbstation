@@ -66,6 +66,16 @@ packer(
                     {distSuffix: '', args: ['--no-comments', '--extensions', '.ts', '--extensions', '.js', '--ignore', '**/*.d.ts']},
                 ],
             },
+            orbService: {
+                name: '@orbstation/service',
+                root: path.resolve(__dirname, 'packages', 'orb-service'),
+                entry: path.resolve(__dirname, 'packages', 'orb-service/src/'),
+                esmOnly: true,
+                doServeWatch: true,
+                babelTargets: [
+                    {distSuffix: '', args: ['--no-comments', '--extensions', '.ts', '--extensions', '.js', '--ignore', '**/*.d.ts']},
+                ],
+            },
             orbCling: {
                 name: '@orbstation/cling',
                 root: path.resolve(__dirname, 'packages', 'orb-cling'),
@@ -110,6 +120,7 @@ packer(
                     '-w', path.resolve(__dirname, 'packages', 'orb-route', 'build') + '/**/*.js',
                     '-w', path.resolve(__dirname, 'packages', 'orb-oas', 'build') + '/**/*.js',
                     '-w', path.resolve(__dirname, 'packages', 'orb-cling', 'build') + '/**/*.js',
+                    '-w', path.resolve(__dirname, 'packages', 'orb-service', 'build') + '/**/*.js',
                     '-w', path.resolve(__dirname, 'packages', 'orb-command', 'build') + '/**/*.js',
                 ],
                 nodeExperimental: {
