@@ -1,5 +1,7 @@
 export interface AppConfig {
-    cdn_public_url: string
-    cdn_bucket: string
-    git_commit?: string
+    host: string
+    buildInfo: { [k: string]: string }
+    // max file size upload in MB
+    maxFileUpload?: number
 }
+

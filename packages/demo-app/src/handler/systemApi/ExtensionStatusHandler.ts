@@ -1,6 +1,6 @@
 import { ServiceService } from '../../services.js'
 import { IExtensionDefinition, ExtensionService } from '@orbstation/app/ExtensionService'
-import { AuthRuleError } from '@bemit/cloud-id/AuthValidator'
+import { AuthRuleError } from '@bemit/cloud-id/AuthRuleError'
 import { CouchDbService } from '@orbstation/app-model-couchdb/CouchDbService'
 import { RouteHandler } from '@orbstation/route/RouteHandler'
 import { RequestCustomPayload } from '../../lib/routing.js'

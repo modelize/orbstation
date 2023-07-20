@@ -1,6 +1,6 @@
 import { ServiceService } from '../services.js'
 import { IdManager } from '@bemit/cloud-id/IdManager'
-import { AuthRuleError } from '@bemit/cloud-id/AuthValidator'
+import { AuthRuleError } from '@bemit/cloud-id/AuthRuleError'
 import { RouteMiddleware } from '@orbstation/route/RouteHandler'
 import { RequestCustomPayload } from '../lib/routing.js'
 

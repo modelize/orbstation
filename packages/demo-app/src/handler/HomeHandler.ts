@@ -18,8 +18,8 @@ const HomeHandler: RouteHandler = async(_req, res) => {
 <body>
     <h1>OrbStation</h1>
     <code>${process.env.APP_ENV}</code>
-    <small style="display: block"><code style="color: #300051">${ServiceService.config('git_commit') || ''}</code></small>
-    <div style="margin-top: 15px;"><a style="color: #4bdcb9; text-decoration: none;" href="https://bemit.io">bemit.io</a></div>
+    <small style="display: block"><code style="color: #300051">${ServiceService.config('buildInfo')?.GIT_COMMIT || ''}</code></small>
+    <div style="margin-top: 15px;"><a style="color: #4bdcb9; text-decoration: none;" href="https://bemit.codes">bemit.codes</a></div>
 </body>
 </html>`)
 }

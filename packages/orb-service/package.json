@@ -1,6 +1,6 @@
 {
     "name": "@orbstation/service",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Service configuration and extension setup helper for NodeJS apps.",
     "author": {
         "name": "bemit",
@@ -20,11 +20,11 @@
         "directory": "packages/orb-service"
     },
     "exports": {
-        ".": "./index.js",
-        "./envIs": "./envIs.js",
-        "./OrbExtensions": "./OrbExtensions.js",
-        "./OrbService": "./OrbService.js",
-        "./OrbServiceFeatures": "./OrbServiceFeatures.js"
+        ".": "./build/index.js",
+        "./envIs": "./build/envIs.js",
+        "./OrbExtensions": "./build/OrbExtensions.js",
+        "./OrbService": "./build/OrbService.js",
+        "./OrbServiceFeatures": "./build/OrbServiceFeatures.js"
     },
     "devDependencies": {
         "@orbstation/oas": "~0.0.1",

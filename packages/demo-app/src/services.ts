@@ -18,6 +18,7 @@ import { ModelService } from '@modelize/interop/ModelService'
 import { RedisManager } from '@bemit/redis/RedisManager'
 import { RedisCached } from '@bemit/redis/RedisCached'
 import { IdManager } from '@bemit/cloud-id/IdManager'
+import { AuthCacheRedisAdapter } from '@bemit/cloud-id/AuthCacheRedis'
 import { CommandDispatcher } from '@orbstation/command/CommandDispatcher'
 import { CommandResolverFolder } from '@orbstation/command/CommandResolverFolder'
 import { CouchDbService } from '@orbstation/app-model-couchdb/CouchDbService'
@@ -30,25 +31,60 @@ import { ExtensionResolver } from '@orbstation/app/ExtensionResolver'
 import { ExtensionRepoLowDb } from '@orbstation/app-model-lowdb/ExtensionRepoLowDb'
 // import { HookRepoLowDb } from '@orbstation/app-model-lowdb/HookRepoLowDb'
 import { JSONFile, Low } from 'lowdb'
+import { OrbService, OrbServiceFeature, OrbServiceFeatures } from '@orbstation/service'
+import { OpenApiApp } from '@orbstation/oas/OpenApiApp'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export const ServiceService = new ServiceContainer<AppConfig>()
 
 export interface ServiceConfig {
-    buildInfo: { [k: string]: string }
     isProd?: boolean
-    serviceId: string
-    logId: string
+    buildInfo: AppConfig['buildInfo']
+    packageJson: { name?: string, version?: string, [k: string]: unknown }
+    service: OrbService<OrbServiceFeatures<{ 'gcp:log': OrbServiceFeature }>>
 }
 
-export const services = (serviceConfig: Partial<ServiceConfig>): ServiceConfig => {
-    const {buildInfo, isProd} = serviceConfig
+export const services = (serviceConfig: ServiceConfig) => {
+    const {isProd, buildInfo, service} = serviceConfig
     // const serviceId = 'render.orbiter.cloud' // process.env.LOG_SERVICE_NAME
     // ServiceService.configure('cdn_public_url', 'https://cdn.bserve.link')
-    if(buildInfo?.GIT_COMMIT) {
-        ServiceService.configure('git_commit', buildInfo?.GIT_COMMIT)
-    }
+    // if(buildInfo?.GIT_COMMIT) {
+    //     ServiceService.configure('git_commit', buildInfo?.GIT_COMMIT)
+    // }
+    ServiceService.configure('host', process.env.HOST || ('http://localhost:' + process.env.PORT))
+    ServiceService.configure('buildInfo', buildInfo)
+
+    ServiceService.define(OpenApiApp, (): ConstructorParameters<typeof OpenApiApp> => [
+        {
+            title: 'Orbstation Demo App',
+            description: 'API docs of the demo app.',
+            version: buildInfo?.GIT_COMMIT?.split('/')?.[2]?.slice(0, 6) || 'v0.0.1',
+            license: {name: 'UNLICENSED'},
+        },
+        [],
+        {
+            securitySchemes: {
+                'bearerAuth': {
+                    'type': 'http',
+                    'scheme': 'bearer',
+                    'bearerFormat': 'JWT',
+                },
+            },
+            security: [
+                {
+                    'bearerAuth': [],
+                },
+            ],
+            servers: [
+                {
+                    url: 'http://localhost:3030',
+                    description: 'local dev server',
+                    variables: {},
+                },
+            ],
+        },
+    ])
 
     const lowDbFolder = path.resolve(__dirname, '../data')
 
@@ -64,27 +100,47 @@ export const services = (serviceConfig: Partial<ServiceConfig>): ServiceConfig =
         }
     })
 
-    ServiceService.define(LogManager, [{
-        //keyFilename: __dirname + '/config/_auth_google_cloud_log.json',
-        keyFilename: gcpFiles.log as string,
-    }])
+
+    if(service.features.enabled('gcp:log')) {
+        ServiceService.define(LogManager, [
+            gcpFiles.log ? {
+                keyFilename: gcpFiles.log,
+                // keyFilename: envFileToAbsolute(process.env.GCP_LOG_KEY) as string,
+            } : {},
+            {
+                service: service.name,
+                version: service.version,
+                logId: process.env.LOG_ID + '--' + service.environment,
+                logProject: process.env.LOG_PROJECT as string,
+            },
+            {
+                app_env: service.environment,
+                ...service.buildNo ? {
+                    build_no: service.buildNo,
+                } : {},
+                docker_service_name: process.env.DOCKER_SERVICE_NAME as string,
+                docker_node_host: process.env.DOCKER_NODE_HOST as string,
+                docker_task_name: process.env.DOCKER_TASK_NAME as string,
+            },
+        ])
+    }
 
     ServiceService.define(RedisManager, (): ConstructorParameters<typeof RedisManager> => [[
         RedisManager
-            .create({
+            .define(6, {
                 url: 'redis://' + process.env.REDIS_HOST,
                 database: 6,
             })
             .on('error', (err) => console.log('Redis Client Error', err)),
         RedisManager
-            .create({
+            .define(7, {
                 url: 'redis://' + process.env.REDIS_HOST,
                 database: 7,
             })
             .on('error', (err) => console.log('Redis Client Error', err)),
     ]])
     ServiceService.define(RedisCached, (): ConstructorParameters<typeof RedisCached> => [
-        ServiceService.use(RedisManager).database(7),
+        ServiceService.use(RedisManager).connection(7),
     ])
     ServiceService.define(CouchDbService, [{
         endpoint: 'http://local-admin:local-pass@localhost:4273',
@@ -108,7 +164,7 @@ export const services = (serviceConfig: Partial<ServiceConfig>): ServiceConfig =
         },
         cacheExpire: 60 * (isProd ? 60 * 6 : 15),
         cacheExpireMemory: 60 * 5,
-        redis: ServiceService.use(RedisManager).database(6),
+        cacheAdapter: new AuthCacheRedisAdapter(ServiceService.use(RedisManager).connection(6)),
     }])
 
     ServiceService.define(SchemaService, [{
@@ -178,5 +234,5 @@ export const services = (serviceConfig: Partial<ServiceConfig>): ServiceConfig =
         },
     }])
 
-    return serviceConfig as ServiceConfig
+    return ServiceService
 }

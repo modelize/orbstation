@@ -1,6 +1,6 @@
 {
     "name": "@orbstation/oas",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Simple OpenAPI typings and definition helper.",
     "author": {
         "name": "bemit",
@@ -20,8 +20,8 @@
         "directory": "packages/orb-oas"
     },
     "exports": {
-        "./OpenApi": "./OpenApi.js",
-        "./OpenApiApp": "./OpenApiApp.js"
+        "./OpenApi": "./build/OpenApi.js",
+        "./OpenApiApp": "./build/OpenApiApp.js"
     },
     "devDependencies": {
         "@orbstation/route": "~0.0.6"
