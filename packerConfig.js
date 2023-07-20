@@ -146,10 +146,14 @@ packer(
         } else {
             if(execs.indexOf('doBuild') !== -1 && execs.indexOf('doBuildBackend') !== -1) {
                 const nodePackages = [
-                    path.resolve(__dirname, 'packages', 'orb-command'),
-                    path.resolve(__dirname, 'packages', 'orb-route'),
-                    path.resolve(__dirname, 'packages', 'orb-oas'),
+                    path.resolve(__dirname, 'packages', 'orb-app'),
+                    path.resolve(__dirname, 'packages', 'orb-app-model-couchdb'),
+                    path.resolve(__dirname, 'packages', 'orb-app-model-lowdb'),
                     path.resolve(__dirname, 'packages', 'orb-cling'),
+                    path.resolve(__dirname, 'packages', 'orb-command'),
+                    path.resolve(__dirname, 'packages', 'orb-oas'),
+                    path.resolve(__dirname, 'packages', 'orb-route'),
+                    path.resolve(__dirname, 'packages', 'orb-service'),
                     path.resolve(__dirname, 'packages', 'schema-lib'),
                     // path.resolve(__dirname, 'packages', 'render-style'),
                 ]
