@@ -1,6 +1,6 @@
 {
     "name": "@orbstation/cling",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Textual status helper, for CLI progress or API result log",
     "author": {
         "name": "bemit",

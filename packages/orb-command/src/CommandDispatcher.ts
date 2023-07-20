@@ -30,27 +30,46 @@ export class CommandDispatcher<C = undefined> {
         return (new CommandRun<C>(runId, context, opts)).listenOnSignals(signals)
     }
 
+    protected async showHelpOrExit(commandRun: CommandRun<C>, args?: string[]) {
+        const maybeHelpArg = args?.[0]
+        if(maybeHelpArg && this.helpArgs.includes(maybeHelpArg)) {
+            for(const resolver of this.resolver) {
+                if(commandRun.shouldHalt) return
+                const commands = await resolver.listHelp()
+                commands.forEach(({help, name}) => {
+                    process.stdout.write(' Command `' + name + '`:' + '\n')
+                    process.stdout.write('  ' + (help || 'no help description') + '\n\n')
+                })
+            }
+            return
+        }
+        throw new Error('no command given, use one of `' + this.helpArgs.join(', ') + '` to list all commands')
+    }
+
     async dispatch(commandRun: CommandRun<C>, args?: string[]): Promise<void> {
+        try {
+            await this.dispatchCommand(commandRun, args)
+        } finally {
+            if(!commandRun.isHalted) {
+                commandRun.setIsHalted()
+            }
+        }
+
+        if(commandRun.shouldHalt) {
+            throw new ErrorCommandAborted('commandRun is halted')
+        }
+    }
+
+    protected async dispatchCommand(commandRun: CommandRun<C>, args?: string[]): Promise<void> {
         const maybeCommand = args?.[0]
         let command: string | undefined = undefined
         if(maybeCommand && !maybeCommand.startsWith('-') && !this.helpArgs.includes(maybeCommand)) {
             command = maybeCommand
             args = args?.slice(1)
         }
-        const maybeHelpArg = args?.[0]
         if(!command) {
-            if(maybeHelpArg && this.helpArgs.includes(maybeHelpArg)) {
-                for(const resolver of this.resolver) {
-                    if(commandRun.isHalted()) return
-                    const commands = await resolver.listHelp()
-                    commands.forEach(({help, name}) => {
-                        process.stdout.write(' Command `' + name + '`:' + '\n')
-                        process.stdout.write('  ' + (help || 'no help description') + '\n\n')
-                    })
-                }
-                return
-            }
-            throw new Error('no command given, use one of `' + this.helpArgs.join(', ') + '` to list all commands')
+            await this.showHelpOrExit(commandRun, args)
+            if(commandRun.shouldHalt) return
         }
 
         const resolvers = this.resolver.slice(0, this.resolver.length)
@@ -61,14 +80,15 @@ export class CommandDispatcher<C = undefined> {
             if(resolver) {
                 cmd = await resolver.resolve(command as string)
             }
-        } while(!commandRun.isHalted() && typeof resolver !== 'undefined' && typeof cmd === 'undefined')
+        } while(!commandRun.shouldHalt && typeof resolver !== 'undefined' && typeof cmd === 'undefined')
 
-        if(commandRun.isHalted()) return
+        if(commandRun.shouldHalt) return
 
         if(!resolver || typeof cmd === 'undefined') {
             throw new ErrorCommandNotFound('command not found: ' + command)
         }
 
+        const maybeHelpArg = args?.[0]
         const showHelp = maybeHelpArg ? this.helpArgs.includes(maybeHelpArg) : false
         if(showHelp) {
             process.stdout.write(' Command `' + command + '`:' + '\n')
@@ -76,10 +96,6 @@ export class CommandDispatcher<C = undefined> {
             return
         }
 
-        await (cmd.run(command, args || [], commandRun) || Promise.resolve())
-
-        if(commandRun.isHalted()) {
-            throw new ErrorCommandAborted('commandRun is halted')
-        }
+        await (cmd.run(commandRun, args || []) || Promise.resolve())
     }
 }

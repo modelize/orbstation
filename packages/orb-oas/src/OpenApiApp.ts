@@ -28,7 +28,7 @@ export class OpenApiApp {
         servers?: {
             url: string
             description?: string
-            variables: {
+            variables?: {
                 [variable: string]: {
                     enum?: string[]
                     default: string

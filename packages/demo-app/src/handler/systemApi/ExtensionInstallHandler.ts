@@ -2,7 +2,7 @@ import { ExtensionSetup } from '@orbstation/app/ExtensionSetup'
 import { ErrorExtensionSetup } from '@orbstation/app/ExtensionSetup/ErrorExtensionSetup'
 import { ServiceService } from '../../services.js'
 import { ExtensionService } from '@orbstation/app/ExtensionService'
-import { AuthRuleError } from '@bemit/cloud-id/AuthValidator'
+import { AuthRuleError } from '@bemit/cloud-id/AuthRuleError'
 import { RouteHandler } from '@orbstation/route/RouteHandler'
 import { RequestCustomPayload } from '../../lib/routing.js'
 

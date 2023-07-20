@@ -8,6 +8,7 @@ export const ErrorHandlerMiddleware: ErrorRequestHandler = async(
 ) => {
     res.locals.error_stack = err.stack
     let messagePublic = 'system-error'
+    let extraPublic: { [k: string]: any } = {}
     res = res.status(500)
     if(err instanceof RouteHandlerError) {
         res.locals.error = err.message || err.publicMessage
@@ -18,6 +19,7 @@ export const ErrorHandlerMiddleware: ErrorRequestHandler = async(
             res = res.status(err.statusCode)
         }
         messagePublic = err.publicMessage || 'handler-error'
+        extraPublic = err.publicExtra || {}
     } else {
         res.locals.error = err.message
         // @ts-ignore
@@ -30,11 +32,14 @@ export const ErrorHandlerMiddleware: ErrorRequestHandler = async(
 
     if(process.env.NODE_ENV !== 'production') {
         return res.json({
-            error: err.message,
-            reason: messagePublic,
+            error: typeof err.message === 'undefined' ? messagePublic : err.message,
+            reason: typeof err.message === 'undefined' ? undefined : messagePublic,
             error_stack: err.stack?.split('\n'),
         })
     }
 
-    return res.json({error: messagePublic})
+    return res.json({
+        ...extraPublic,
+        error: messagePublic,
+    })
 }
