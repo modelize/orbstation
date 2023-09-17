@@ -67,9 +67,9 @@ export class CommandDispatcher<C = undefined> {
             command = maybeCommand
             args = args?.slice(1)
         }
-        if(!command) {
+        if(typeof command !== 'string') {
             await this.showHelpOrExit(commandRun, args)
-            if(commandRun.shouldHalt) return
+            return
         }
 
         const resolvers = this.resolver.slice(0, this.resolver.length)
@@ -78,7 +78,7 @@ export class CommandDispatcher<C = undefined> {
         do {
             resolver = resolvers.shift()
             if(resolver) {
-                cmd = await resolver.resolve(command as string)
+                cmd = await resolver.resolve(command)
             }
         } while(!commandRun.shouldHalt && typeof resolver !== 'undefined' && typeof cmd === 'undefined')
 
